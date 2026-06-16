@@ -1,0 +1,20 @@
+RewriteEngine On
+
+# Custom 404 page (JSON for API clients, HTML for browsers)
+ErrorDocument 404 /404.php
+
+# Block direct access to sensitive directories
+RewriteRule ^(config|services|middleware|models|logs|scripts|database)/ - [F,L]
+
+# Block access to dotfiles (.env, .git, etc.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Security headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "DENY"
+Header set X-XSS-Protection "1; mode=block"
+Header set Referrer-Policy "no-referrer-when-downgrade"
+
+php_flag display_errors off

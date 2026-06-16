@@ -1,0 +1,117 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Smart Farm Irrigation Backend API",
+    "version": "1.0.0",
+    "description": "REST API for NodeMCU ESP8266 devices, the web dashboard, and the Flutter mobile app."
+  },
+  "servers": [{ "url": "/api" }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" },
+      "deviceAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Used together with X-Device-Id header for NodeMCU endpoints"
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/auth/login.php": {
+      "post": {
+        "summary": "Login and receive a JWT",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "type": "object", "properties": { "email": { "type": "string" }, "password": { "type": "string" } }, "required": ["email", "password"] } } }
+        },
+        "responses": { "200": { "description": "JWT issued" }, "401": { "description": "Invalid credentials" } }
+      }
+    },
+    "/auth/logout.php": { "post": { "summary": "Logout (client discards token)", "responses": { "200": { "description": "OK" } } } },
+    "/auth/register.php": { "post": { "summary": "Create a user (admin only)", "responses": { "201": { "description": "Created" } } } },
+    "/auth/me.php": { "get": { "summary": "Get current authenticated user", "responses": { "200": { "description": "OK" } } } },
+    "/farms/index.php": {
+      "get": { "summary": "List or get farms", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Create a farm", "responses": { "201": { "description": "Created" } } },
+      "put": { "summary": "Update a farm", "responses": { "200": { "description": "OK" } } },
+      "delete": { "summary": "Delete a farm (admin only)", "responses": { "200": { "description": "OK" } } }
+    },
+    "/devices/index.php": {
+      "get": { "summary": "List or get devices", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Register a NodeMCU device, returns api_key once", "responses": { "201": { "description": "Created" } } },
+      "delete": { "summary": "Delete a device (admin only)", "responses": { "200": { "description": "OK" } } }
+    },
+    "/zones/index.php": {
+      "get": { "summary": "List zones for a farm (max 4 per farm)", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Create a zone", "responses": { "201": { "description": "Created" } } },
+      "put": { "summary": "Update a zone", "responses": { "200": { "description": "OK" } } },
+      "delete": { "summary": "Delete a zone", "responses": { "200": { "description": "OK" } } }
+    },
+    "/pumps/index.php": {
+      "get": { "summary": "List pumps (water sources) for a farm", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Configure a water source (borewell/open_well)", "responses": { "201": { "description": "Created" } } }
+    },
+    "/pumps/control.php": { "post": { "summary": "Turn a pump ON/OFF and mirror to device commands", "responses": { "200": { "description": "OK" } } } },
+    "/upload_sensor.php": {
+      "post": {
+        "summary": "NodeMCU pushes sensor readings",
+        "security": [{ "deviceAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "moisture_zone1": { "type": "number" },
+                  "moisture_zone2": { "type": "number" },
+                  "moisture_zone3": { "type": "number" },
+                  "moisture_zone4": { "type": "number" },
+                  "temperature": { "type": "number" },
+                  "humidity": { "type": "number" },
+                  "water_level": { "type": "number" },
+                  "flow_rate": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Stored, automation evaluated" } }
+      }
+    },
+    "/get_commands.php": {
+      "get": {
+        "summary": "NodeMCU polls every 10s for desired pump/zone state",
+        "security": [{ "deviceAuth": [] }],
+        "responses": { "200": { "description": "bore_pump/well_pump/zone1-4 states" } }
+      }
+    },
+    "/schedules/index.php": {
+      "get": { "summary": "List schedules for a farm", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Create an irrigation schedule", "responses": { "201": { "description": "Created" } } },
+      "put": { "summary": "Update a schedule", "responses": { "200": { "description": "OK" } } },
+      "delete": { "summary": "Delete a schedule", "responses": { "200": { "description": "OK" } } }
+    },
+    "/weather/index.php": {
+      "get": { "summary": "Get latest stored weather for a farm", "responses": { "200": { "description": "OK" } } },
+      "post": { "summary": "Fetch and store weather from OpenWeatherMap", "responses": { "200": { "description": "OK" } } }
+    },
+    "/alerts/index.php": {
+      "get": { "summary": "List alerts for a farm", "responses": { "200": { "description": "OK" } } },
+      "put": { "summary": "Resolve an alert", "responses": { "200": { "description": "OK" } } }
+    },
+    "/reports/index.php": {
+      "get": {
+        "summary": "Daily/weekly/monthly reports: irrigation_history, water_consumption, pump_runtime",
+        "parameters": [
+          { "name": "farm_id", "in": "query", "required": true, "schema": { "type": "integer" } },
+          { "name": "type", "in": "query", "schema": { "type": "string", "enum": ["daily", "weekly", "monthly"] } },
+          { "name": "report", "in": "query", "schema": { "type": "string", "enum": ["irrigation_history", "water_consumption", "pump_runtime"] } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    }
+  }
+}
