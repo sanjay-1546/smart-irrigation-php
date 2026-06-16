@@ -18,14 +18,7 @@ if (PHP_SAPI !== 'cli') {
     exit('This script can only be run from the command line.');
 }
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../services/Logger.php';
-require_once __DIR__ . '/../services/Response.php';
-require_once __DIR__ . '/../services/WeatherService.php';
-require_once __DIR__ . '/../services/AutomationEngine.php';
-require_once __DIR__ . '/../models/SensorReading.php';
-require_once __DIR__ . '/../models/Command.php';
-require_once __DIR__ . '/../models/Schedule.php';
+require_once __DIR__ . '/../config/autoload.php';
 
 $db = Database::connection();
 $weatherService = new WeatherService();

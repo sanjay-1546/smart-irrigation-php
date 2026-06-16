@@ -6,7 +6,7 @@ declare(strict_types=1);
  * timezone, autoloading, CORS, and JSON content negotiation.
  */
 
-require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/autoload.php';
 $config = app_config();
 
 date_default_timezone_set($config['app']['timezone']);
@@ -18,17 +18,6 @@ if ($config['app']['debug']) {
     error_reporting(0);
     ini_set('display_errors', '0');
 }
-
-spl_autoload_register(function (string $class) {
-    $dirs = ['config', 'services', 'middleware', 'models'];
-    foreach ($dirs as $dir) {
-        $path = __DIR__ . "/$dir/$class.php";
-        if (is_file($path)) {
-            require_once $path;
-            return;
-        }
-    }
-});
 
 set_exception_handler(function (Throwable $e) {
     Logger::error($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());

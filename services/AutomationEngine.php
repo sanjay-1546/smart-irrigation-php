@@ -78,6 +78,7 @@ class AutomationEngine
         if ($stopAllPumps) {
             $desired['bore_pump'] = 'OFF';
             $desired['well_pump'] = 'OFF';
+            (new IrrigationHistory())->stopAllOpenForFarm($farmId);
             $this->raiseAlert($farmId, $deviceId, 'LOW_WATER', 'Water level below 20% - all pumps stopped');
         }
 

@@ -25,7 +25,7 @@ if ($method === 'GET') {
         Response::error('Validation failed', 422, $validator->errors());
     }
     $result = (new WeatherService())->fetchAndStore((int) $input['farm_id'], $input['location']);
-    $result ? Response::success($result, 'Weather updated') : Response::serverError('Failed to fetch weather data');
+    $result ? Response::success($result, 'Weather updated') : Response::error('Weather provider unavailable or not configured', 503);
 } else {
     Response::error('Method not allowed', 405);
 }

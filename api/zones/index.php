@@ -28,11 +28,13 @@ switch ($method) {
         if ($validator->fails()) {
             Response::error('Validation failed', 422, $validator->errors());
         }
-        if ($zone->countForFarm((int) $input['farm_id']) >= 4) {
-            $existing = array_filter($zone->allForFarm((int) $input['farm_id']), fn($z) => (int) $z['zone_number'] === (int) $input['zone_number']);
-            if (empty($existing)) {
-                Response::error('A farm supports a maximum of 4 irrigation zones', 422);
-            }
+        $existingZones = $zone->allForFarm((int) $input['farm_id']);
+        $numberTaken = array_filter($existingZones, fn($z) => (int) $z['zone_number'] === (int) $input['zone_number']);
+        if (!empty($numberTaken)) {
+            Response::error("Zone number {$input['zone_number']} already exists for this farm. Use PUT to update it.", 409);
+        }
+        if (count($existingZones) >= 4) {
+            Response::error('A farm supports a maximum of 4 irrigation zones', 422);
         }
         $id = $zone->create($input);
         Response::success(['id' => $id], 'Zone created', 201);

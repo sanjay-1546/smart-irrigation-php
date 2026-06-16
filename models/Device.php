@@ -45,7 +45,7 @@ class Device
         return ['id' => (int) $this->db->lastInsertId(), 'api_key' => $apiKey];
     }
 
-    public function updateLastSeen(string $deviceId, string $firmwareVersion = null): void
+    public function updateLastSeen(string $deviceId, ?string $firmwareVersion = null): void
     {
         $stmt = $this->db->prepare(
             'UPDATE devices SET last_seen = NOW(), firmware_version = COALESCE(?, firmware_version) WHERE device_id = ?'
