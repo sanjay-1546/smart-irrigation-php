@@ -9,7 +9,7 @@ class WeatherService
     public function __construct()
     {
         $this->db = Database::connection();
-        $this->config = require __DIR__ . '/../config/config.php';
+        $this->config = require_once __DIR__ . '/../config/config.php';
     }
 
     /**

@@ -7,6 +7,7 @@ declare(strict_types=1);
  * envvars).
  */
 
+if (!function_exists('env')) {
 function env(string $key, $default = null)
 {
     static $loaded = false;
@@ -33,6 +34,7 @@ function env(string $key, $default = null)
 
     $envVal = getenv($key);
     return $envVal !== false ? $envVal : $default;
+}
 }
 
 return [

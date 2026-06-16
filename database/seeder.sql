@@ -28,7 +28,7 @@ VALUES
     ('Demo Admin', 'admin@smartfarm.local', '$2b$10$oiu3eOInPolT.XOoGAgMp.MI6AbwElCTFy6wx8C/ICGYMq7hbKPMO', 'admin', 1),
     ('Demo Farmer', 'farmer@smartfarm.local', '$2b$10$oiu3eOInPolT.XOoGAgMp.MI6AbwElCTFy6wx8C/ICGYMq7hbKPMO', 'farmer', 1),
     ('Demo Technician', 'technician@smartfarm.local', '$2b$10$oiu3eOInPolT.XOoGAgMp.MI6AbwElCTFy6wx8C/ICGYMq7hbKPMO', 'technician', 1)
-ON DUPLICATE KEY UPDATE email = email;
+ON DUPLICATE KEY UPDATE email = VALUES(email);
 
 -- ---------------------------------------------------------------------------
 -- Farm (owned by the demo farmer)
@@ -52,7 +52,7 @@ JOIN (
     UNION ALL SELECT 4, 'Zone 4 - West Field', 25.00, 'Groundnut'
 ) z
 WHERE f.farm_name = 'Green Valley Farm'
-ON DUPLICATE KEY UPDATE zone_name = zone_name;
+ON DUPLICATE KEY UPDATE zone_name = VALUES(zone_name);
 
 -- ---------------------------------------------------------------------------
 -- Pumps (one borewell, one open well)
@@ -65,7 +65,7 @@ JOIN (
     UNION ALL SELECT 'open_well', 'Open Well Pump 1'
 ) p
 WHERE f.farm_name = 'Green Valley Farm'
-ON DUPLICATE KEY UPDATE pump_name = pump_name;
+ON DUPLICATE KEY UPDATE pump_name = VALUES(pump_name);
 
 -- ---------------------------------------------------------------------------
 -- Device (NodeMCU). api_key below is a fixed demo value for local testing
@@ -77,7 +77,7 @@ SELECT 'esp8266-demo-001', f.id, f.farm_name, '1.0.0',
        'f9c974e88c7154aa95e18cf7ccf889df653b12f72bbbdb0eef51466c783fbac5', 1
 FROM farms f
 WHERE f.farm_name = 'Green Valley Farm'
-ON DUPLICATE KEY UPDATE firmware_version = firmware_version;
+ON DUPLICATE KEY UPDATE firmware_version = VALUES(firmware_version);
 
 -- ---------------------------------------------------------------------------
 -- Default device commands row (all OFF until automation/schedule/manual
@@ -85,7 +85,7 @@ ON DUPLICATE KEY UPDATE firmware_version = firmware_version;
 -- ---------------------------------------------------------------------------
 INSERT INTO commands (device_id)
 VALUES ('esp8266-demo-001')
-ON DUPLICATE KEY UPDATE device_id = device_id;
+ON DUPLICATE KEY UPDATE device_id = VALUES(device_id);
 
 -- ---------------------------------------------------------------------------
 -- Schedule: irrigate Zone 1 from the borewell every morning 06:00-06:30
