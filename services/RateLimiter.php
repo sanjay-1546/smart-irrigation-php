@@ -13,7 +13,8 @@ class RateLimiter
 
     public function __construct()
     {
-        $config = require_once __DIR__ . '/../config/config.php';
+        require_once __DIR__ . '/../config/config.php';
+        $config = app_config();
         $this->db = Database::connection();
         $this->maxRequests = $config['rate_limit']['max_requests'];
         $this->windowSeconds = $config['rate_limit']['window_seconds'];

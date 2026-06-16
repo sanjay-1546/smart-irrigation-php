@@ -16,7 +16,8 @@ class AuthMiddleware
             return self::$user;
         }
 
-        $config = require_once __DIR__ . '/../config/config.php';
+        require_once __DIR__ . '/../config/config.php';
+        $config = app_config();
         $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
 
         if (!preg_match('/Bearer\s+(\S+)/', $header, $matches)) {

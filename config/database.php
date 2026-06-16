@@ -15,7 +15,8 @@ class Database
             return self::$instance;
         }
 
-        $config = require_once __DIR__ . '/config.php';
+        require_once __DIR__ . '/config.php';
+        $config = app_config();
         $db = $config['db'];
 
         $dsn = sprintf(

@@ -32,6 +32,6 @@ $token = $auth->issueToken($user);
 Response::success([
     'token' => $token,
     'token_type' => 'Bearer',
-    'expires_in' => (require_once __DIR__ . '/../../config/config.php')['jwt']['ttl'],
+    'expires_in' => app_config()['jwt']['ttl'],
     'user' => $user,
 ], 'Login successful');
