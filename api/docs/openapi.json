@@ -102,6 +102,25 @@
       "get": { "summary": "List alerts for a farm", "responses": { "200": { "description": "OK" } } },
       "put": { "summary": "Resolve an alert", "responses": { "200": { "description": "OK" } } }
     },
+    "/users/index.php": {
+      "get": { "summary": "List or get users (admin only)", "responses": { "200": { "description": "OK" } } },
+      "put": { "summary": "Update a user's name/email/role/active status (admin only)", "responses": { "200": { "description": "OK" } } },
+      "delete": { "summary": "Delete a user (admin only, cannot delete self)", "responses": { "200": { "description": "OK" } } }
+    },
+    "/users/profile.php": {
+      "get": { "summary": "Get the current authenticated user's profile", "responses": { "200": { "description": "OK" } } },
+      "put": { "summary": "Update own name/email (role and active status are admin-only)", "responses": { "200": { "description": "OK" } } }
+    },
+    "/users/change_password.php": {
+      "post": {
+        "summary": "Change own password",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "type": "object", "properties": { "current_password": { "type": "string" }, "new_password": { "type": "string" } }, "required": ["current_password", "new_password"] } } }
+        },
+        "responses": { "200": { "description": "OK" }, "401": { "description": "Current password incorrect" } }
+      }
+    },
     "/reports/index.php": {
       "get": {
         "summary": "Daily/weekly/monthly reports: irrigation_history, water_consumption, pump_runtime",
