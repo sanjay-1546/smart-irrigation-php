@@ -24,6 +24,20 @@ mysql -u root -p -e "CREATE DATABASE smart_irrigation CHARACTER SET utf8mb4;"
 mysql -u root -p smart_irrigation < database/schema.sql
 ```
 
+### Optional: load demo data
+
+For local/dev work, `database/seeder.sql` populates a working set of users,
+a farm, 4 zones, 2 pumps, a device, a schedule, and sample sensor/weather
+rows so you can exercise the API immediately:
+
+```bash
+mysql -u root -p smart_irrigation < database/seeder.sql
+```
+
+**Do not run this against a production database** — every seeded account
+shares the same publicly-documented demo password. See the bottom of
+`database/seeder.sql` for the full list of seeded credentials.
+
 ## 3. Configure environment
 
 ```bash
